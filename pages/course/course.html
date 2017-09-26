@@ -1,0 +1,105 @@
+<ion-header>
+    <ion-navbar  color="transparent">
+        <ion-buttons start>
+            <button ion-button menuToggle>
+                <ion-icon name="md-menu"></ion-icon>
+            </button>
+        </ion-buttons>
+        <ion-title>{{fullCourse?.course.name}}</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content elastic-header fixedscrollheader>
+
+    <div id="featured">
+        
+        <img [src]="fullCourse?.course.featured_image"/>
+        <div class="on_featured_image">
+            <ion-row>
+                <ion-col>
+                    <star-rating [rating]="fullCourse?.course.average_rating"></star-rating>
+                </ion-col>
+                <ion-col>
+                    <ion-icon name="md-contacts"></ion-icon><span  *ngIf="fullCourse?.course.seats">{{fullCourse?.course.total_students}}/{{course.seats}}</span><span  *ngIf="!fullCourse?.course.seats">{{fullCourse?.course.total_students}}</span>
+                </ion-col>
+                <ion-col>
+                    <div class="course_instructor">
+                        <ion-avatar item-left>
+                            <img [src]=fullCourse?.course.instructor?.avatar>
+                        </ion-avatar>
+                        <strong>{{fullCourse?.course.instructor?.name}}</strong>
+                    </div>
+                </ion-col>
+            </ion-row>
+            <ion-slides #CourseTabs id="coursetabs" spaceBetween="0" slidesPerView="3" (ionSlideDidChange)="onTabChanged()">
+                <ion-slide *ngFor="let tab of coursetabs; let i=index;">
+                  <button ion-button (click)="selectedTab(i)">
+                    {{tab}}
+                  </button>
+                </ion-slide>
+            </ion-slides>
+        </div>
+    </div>
+    <button id="course_button" ion-button icon-left *ngIf="myCourse"  [innerHtml]="show_course_status()" [navPush]="courseStatusPage" [navParams]="{'course':course,'user':config.user}"></button>
+    <button id="course_button" ion-button icon-left *ngIf="!myCourse" (click)="purchaseCourse()" [innerHtml]="fullCourse?.course.price_html"></button>
+    
+    <div id="coursecontent" padding>
+        <ion-slides id="courseslides" #CourseSlides (ionSlideDidChange)="onSlideChanged()">
+            
+            <ion-slide *ngFor="let tab of coursetabs; let i=index;">
+               
+                <div class="{{tab}}" *ngIf="(tab == 'description')" [innerHTML]=fullCourse[tab]></div>
+                <div class="{{tab}}" *ngIf="(tab == 'curriculum')">
+                    <ion-list>
+                        <ion-item *ngFor="let item of fullCourse[tab]">
+                            <h3 *ngIf="item?.type === 'section'">
+                                <strong [innerHtml]="item.title"></strong>
+                            </h3>
+                            <h3 *ngIf="item?.type === 'unit'">
+                                <span [innerHtml]="item.title"></span>
+                            </h3>
+                            <ion-icon name="ios-arrow-dropright" item-left *ngIf="item?.type === 'unit'"></ion-icon>
+                            <ion-icon name="md-alarm" item-left *ngIf="item?.type === 'quiz'"></ion-icon>
+                            <h3 *ngIf="item?.type === 'quiz'">
+                                <span [innerHtml]="item.title"></span>
+                            </h3>
+                        </ion-item>
+                    </ion-list>
+                </div>
+                <div class="{{tab}}" *ngIf="(tab == 'reviews')">
+                    <div class="message" *ngIf="!fullCourse[tab]?.length">
+                        {{config.get_translation('no_reviews')}}
+                    </div>
+                    <ion-grid>
+                        <ion-row>
+                            <ion-col *ngFor="let item of fullCourse[tab]" col-12 col-lg-6>
+                                <ion-card>
+                                    <ion-card-title><star-rating [rating]="item?.rating" align-right></star-rating>{{item.title}}</ion-card-title>
+                                    <ion-card-content [innerHtml]=item?.content>
+                                    </ion-card-content>
+                                    <ion-item>
+                                        <ion-avatar item-left>
+                                            <img [src]=item?.member?.avatar>
+                                        </ion-avatar>
+                                        <h4>{{item.member?.name}}<span *ngIf="item.member.sub && item.member.sub != 'false'">{{item.member?.sub}</span></h4>
+                                    </ion-item>
+                                </ion-card>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </div>
+                <div class="{{tab}}" *ngIf="(tab == 'instructors')">
+                    <ion-grid>
+                        <ion-row>
+                            <ion-col *ngFor="let item of fullCourse[tab]" col-12 col-lg-6>
+                                <instructorblock [instructor]="item"></instructorblock>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </div>
+            </ion-slide>
+        </ion-slides>
+    </div>
+    <div *ngIf="message?.length" class="message_toggle">
+        <div [innerHtml]="message"></div>
+    </div>
+</ion-content>

@@ -1,0 +1,15 @@
+<ion-tabs color="white" *ngIf="config.isLoggedIn" [selectedIndex]="myIndex">
+  <ion-tab [root]="home" tabIcon="md-home"></ion-tab>
+  <ion-tab [root]="directoryPage" tabIcon="md-list"></ion-tab> 
+  <ion-tab [root]="profileTab" tabIcon="md-contact" [rootParams]="userdata"></ion-tab>
+  <ion-tab [root]="courseStatus" [rootParams]="config.lastCourse"  *ngIf="config.lastCourse && config.settings.access_token" tabIcon="md-play"></ion-tab>
+  <ion-tab [root]="updates" tabIcon="md-notifications-outline"><span *ngIf="unread_count>0">{{unread_count}}</span></ion-tab>
+  <ion-tab [root]="wishlist" tabIcon="md-heart-outline"></ion-tab>
+</ion-tabs>
+<ion-tabs color="white" *ngIf="!config.isLoggedIn" [selectedIndex]="myIndex">
+    <ion-tab [root]="home" tabIcon="md-home"></ion-tab>
+    <ion-tab [root]="directoryPage" tabIcon="md-list"></ion-tab>
+  	<ion-tab [root]="profileTab" tabIcon="md-contact"></ion-tab>
+  	<ion-tab [root]="updates" tabIcon="md-notifications-outline"><span *ngIf="unread_count>0">{{unread_count}}</span></ion-tab>
+  <ion-tab [root]="wishlist" tabIcon="md-heart-outline"></ion-tab>
+</ion-tabs>

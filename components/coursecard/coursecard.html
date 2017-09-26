@@ -1,0 +1,13 @@
+<ion-card class="featured_course_block" [navPush]="coursePage" [navParams]="course">
+	<div class="featured_course_image">    
+	    <lazy-img [inputSrc]="course.featured_image"></lazy-img>
+	</div>
+	<ion-card-content class="align-left">
+	    <ion-card-title>
+	        {{course.name}}
+	    </ion-card-title>
+	    <star-rating *ngIf="popular" [rating]=course.average_rating></star-rating>
+	    <div class="course_price" [innerHtml]=course.price_html></div>
+	</ion-card-content>
+</ion-card>
+<div class="wishlist {{active}}" (click)="addToWishlist()"></div>
